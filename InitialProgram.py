@@ -3,7 +3,7 @@ Simple script to process .csv report file as per RT:469607
 (see ArgumentParser description below).
 """
 
-__version__ = '0.2.1'
+__version__ = '0.3.1'
 __author__ = 'Alexey Demidyuk <ademidyuk@iponweb.net> & Lev Urbansky <lurbansky@iponweb.net>'
 
 import os
@@ -42,7 +42,7 @@ def process(report_filename: str, output_folder: str):
     # ...
     with open(report_filename) as f:
         reader = csv.DictReader(
-            f, ['pub_id','invalid_imps', 'invalid_imps_cost']
+            f, ['pub_id','imps','cost', 'invalid_imps', 'invalid_imps_cost']
         )
 
         # Skip 1st line with header
@@ -54,6 +54,8 @@ def process(report_filename: str, output_folder: str):
             # Save original values
             data_by_publisher[publisher].append((
                 line['pub_id'],
+                line['imps'],
+                line['cost'],
                 line['invalid_imps'],
                 line['invalid_imps_cost']
             ))
