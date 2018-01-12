@@ -4,45 +4,55 @@
 #include <vector>
 #include <cmath>
 
+const float G = 9.8f;
+
+void log(float timeInMaxPoint, float height) {
+	printf("t=%f, s=%f\n", timeInMaxPoint, height);
+}
+
+float calcCurHeight(float timeInMaxPoint, float curTime) {
+	float speedInMaxPoint = G * timeInMaxPoint;
+
+	return speedInMaxPoint * curTime - 0.5 * G * curTime * curTime;
+}
+
 int main(int, char *[])
 {
-	const float g = 9.8f;
-	float T, Vn;
-	int S, M;
-	printf("S: ");
-	if (0 == scanf("%d", &S))
+	float timeInMaxPoint,
+		  speedInMaxPoint,
+		  heightInTheEnd,
+		  timeInTheEnd,
+		  height;
+	bool flag = false;
+
+	printf("Height in max point: ");
+	if (0 == scanf("%d", &height))
 	{
 		printf("\n" "expected floating-point number" "\n");
 		exit(1);
 	}
 
-	// T - time point when height is at maximum.
-	// t - current time point
-	// v(0) = g * T
-	// v(t) == v(0) - g * t
-	// s(t) == v(0) * t - 0.5 * g * t * t
-	T = sqrt(S * 2 / g);
-	printf("T=%f\n", T);
-	bool flag = false;
-	for (float t=0; t<T*2;t+=0.1f) {
-		if (t>T&&!flag)
+	timeInMaxPoint = sqrt(height * 2 / G);
+	printf("T=%f\n", timeInMaxPoint);
+
+	for (float curTime = 0; curTime < timeInMaxPoint * 2; curTime += 0.1f) {
+		//an additional step to calc and log the special point
+		if (curTime > timeInMaxPoint && !flag)
 		{
-			flag=true;
-			float V0=  g*T;
-			float s = V0 * T - 0.5 * g * T * T;
-			printf("t=%f, s=%f\n", T, s);
+			flag = true;
+			log(timeInMaxPoint, calcCurHeight(timeInMaxPoint, timeInMaxPoint));
 		}
-		float V0 = g * T;
-		float s =V0*t -0.5 *g*t*t;
-		printf( "t=%f, s=%f\n", t, s );
+
+		//a common step
+		log(curTime, calcCurHeight(timeInMaxPoint, curTime));
 	}
 
+	speedInMaxPoint = G * timeInMaxPoint;
+	heightInTheEnd = speedInMaxPoint * (timeInMaxPoint*2) - 0.5 * G * (timeInMaxPoint*2) * (timeInMaxPoint*2);
+	timeInTheEnd = timeInMaxPoint * 2;
 
+	log( timeInTheEnd, heightInTheEnd );
 
-	float V0 = g*T, s = V0*(T*2) - 0.5*g*(T*2)*(T*2);
-	printf("t=%f, s=%f\n", T*2,s);
-
-	// Pause program until any key pressed.
 	puts("Press any key to continue...");
 	system("pause");
 
